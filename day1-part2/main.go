@@ -72,6 +72,11 @@ func amountGoThroughZero(initialPosition int, rotationAmount int, dialSize int) 
 }
 
 func main() {
+	if len(os.Args) != 2 {
+		fmt.Println("Usage: go run main.go <file>")
+		return
+	}
+
 	fileName := os.Args[1]
 
 	file, err := os.Open(fileName)
