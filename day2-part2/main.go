@@ -72,8 +72,8 @@ func main() {
 
 	for readError == nil {
 		rangeString, readError = reader.ReadString(',')
-		if err != nil {
-			log.Fatal(err)
+		if readError != nil {
+			log.Fatal(readError)
 		}
 
 		rangeString = strings.TrimRight(rangeString, ",\n")
