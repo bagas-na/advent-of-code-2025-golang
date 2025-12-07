@@ -7,11 +7,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
 	// Title
-	fmt.Println("Day 7 - part 1 of advent of code 2025!")
+	fmt.Println("Day 7 - part 2 of advent of code 2025!")
 
 	// Args manipulation
 	if len(os.Args) != 2 {
@@ -28,8 +29,8 @@ func main() {
 	reader := bufio.NewReader(file)
 
 	// Read file
-	prevBeam := make([]byte, 0)
-	nextBeam := make([]byte, 0)
+	prevBeam := make([]int, 0)
+	nextBeam := make([]int, 0)
 	curLine := make([]byte, 0)
 	splitCount := 0
 
@@ -49,38 +50,47 @@ func main() {
 		if !bytes.ContainsAny(curLine, "S^") {
 			continue
 		}
-		fmt.Printf("%v\n", string(curLine))
+		fmt.Printf("%v\n", strings.Split(string(curLine), ""))
 
 		// fills nextBeam with all '.'
 		for range curLine {
-			nextBeam = append(nextBeam, '.')
+			nextBeam = append(nextBeam, 0)
 		}
 
 		// Finds where there's S on the current line, add this to nextBeam
 		for i := range curLine {
 			if curLine[i] == 'S' {
-				nextBeam[i] = '|'
+				nextBeam[i] = 1
 			}
 		}
 
 		// Find where there's a ^ on the current line AND a | on prevBeam
 		// Otherise an unhindered beam will continue on
+
 		if len(prevBeam) > 0 {
 			for i := range curLine {
-				if curLine[i] == '^' && prevBeam[i] == '|' {
-					nextBeam[i-1] = '|'
-					nextBeam[i+1] = '|'
+				if curLine[i] == '^' && prevBeam[i] > 0 {
+					nextBeam[i-1] += prevBeam[i]
+					nextBeam[i+1] += prevBeam[i]
 					splitCount++
-				} else if prevBeam[i] == '|' {
-					nextBeam[i] = '|'
+				} else if prevBeam[i] > 0 {
+					nextBeam[i] += prevBeam[i]
 				}
 			}
 		}
 
 		// Flush nextBeam to prevBeam
-		fmt.Printf("%v\n", string(nextBeam))
+		fmt.Printf("%v\n", nextBeam)
 		prevBeam = nextBeam
-		nextBeam = make([]byte, 0)
+		nextBeam = make([]int, 0)
 	}
+
 	fmt.Printf("Total splits: %d\n", splitCount)
+
+	total := 0
+	for _, v := range prevBeam {
+		total += v
+	}
+
+	fmt.Printf("Total timelines: %d\n", total)
 }
