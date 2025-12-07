@@ -29,6 +29,42 @@ func ReadToEOF(reader *bufio.Reader) [][]byte {
 	return grid
 }
 
+func CountAdjacent(grid [][]byte, x, y, sizeX, sizeY int, char byte) int {
+	count := 0
+
+	// Check Verticals
+	if y > 0 && grid[y-1][x] == char {
+		count++
+	}
+	if y < sizeY-1 && grid[y+1][x] == char {
+		count++
+	}
+
+	// Check horizontals
+	if x > 0 && grid[y][x-1] == char {
+		count++
+	}
+	if x < sizeX-1 && grid[y][x+1] == char {
+		count++
+	}
+
+	// Check diagonals
+	if y > 0 && x > 0 && grid[y-1][x-1] == char {
+		count++
+	}
+	if y > 0 && x < sizeX-1 && grid[y-1][x+1] == char {
+		count++
+	}
+	if y < sizeY-1 && x > 0 && grid[y+1][x-1] == char {
+		count++
+	}
+	if y < sizeY-1 && x < sizeX-1 && grid[y+1][x+1] == char {
+		count++
+	}
+
+	return count
+}
+
 func main() {
 	fmt.Println("Day 4 - part 1 of advent of code 2025!")
 	if len(os.Args) != 2 {
@@ -57,39 +93,7 @@ func main() {
 				continue
 			}
 
-			count := 0
-
-			// Check Verticals
-			if y > 0 && grid[y-1][x] == '@' {
-				count++
-			}
-			if y < sizeY-1 && grid[y+1][x] == '@' {
-				count++
-			}
-
-			// Check horizontals
-			if x > 0 && grid[y][x-1] == '@' {
-				count++
-			}
-			if x < sizeX-1 && grid[y][x+1] == '@' {
-				count++
-			}
-
-			// Check diagonals
-			if y > 0 && x > 0 && grid[y-1][x-1] == '@' {
-				count++
-			}
-			if y > 0 && x < sizeX-1 && grid[y-1][x+1] == '@' {
-				count++
-			}
-			if y < sizeY-1 && x > 0 && grid[y+1][x-1] == '@' {
-				count++
-			}
-			if y < sizeY-1 && x < sizeX-1 && grid[y+1][x+1] == '@' {
-				count++
-			}
-
-			if count < 4 {
+			if CountAdjacent(grid, x, y, sizeX, sizeY, '@') < 4 {
 				countAccessible++
 			}
 		}
